@@ -8,6 +8,5 @@ Sources/Generator.swift
 Sources/GeneratorPlugin.c
 Sources/PreviewViewController.swift
 exports.lds
-screenshots/
 *.o
 *.d

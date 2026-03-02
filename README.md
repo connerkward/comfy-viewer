@@ -1,8 +1,22 @@
 # ComfyQL
 
-macOS viewer for ComfyUI PNG workflow metadata. Right-click a ComfyUI-generated PNG in Finder → **Open With → ComfyQL** to see a split panel: image on the left, workflow metadata on the right.
+![ComfyQL](screenshots/comfyql.png)
 
-Non-ComfyUI PNGs are passed straight to Preview.app.
+macOS viewer for ComfyUI image metadata. Right-click a ComfyUI-generated PNG or TIFF in Finder → **Open With → ComfyQL** to see a split panel: image on the left, workflow metadata on the right.
+
+Non-ComfyUI files are passed straight to Preview.app.
+
+---
+
+## Supported formats
+
+| Format | Metadata source |
+|---|---|
+| PNG | `workflow` / `prompt` tEXt chunks |
+| TIFF | XMP tag (700) — reads `cfl:workflow`, `cfl:prompt`, `cfl:models`, `cfl:layers` |
+| WEBP | XMP block |
+
+---
 
 ## Requirements
 
@@ -17,36 +31,30 @@ cd comfyui-quicklook
 make install
 ```
 
-This builds and copies `ComfyQL.app` to `~/Applications/` and registers it with Launch Services.
+Builds `ComfyQL.app` → `~/Applications/` and registers with Launch Services.
 
-> **First run:** macOS may warn about an unidentified developer. Right-click `ComfyQL.app` → Open, or run:
+> **First run:** macOS may warn about an unidentified developer. Right-click `ComfyQL.app` → Open, or:
 > ```bash
 > xattr -dr com.apple.quarantine ~/Applications/ComfyQL.app
 > ```
 
 ## Usage
 
-**Finder:** Right-click any ComfyUI PNG → Open With → ComfyQL
+**Finder:** Right-click any ComfyUI PNG or TIFF → Open With → ComfyQL
 
 **Terminal:**
 ```bash
-open -a ComfyQL /path/to/ComfyUI_image.png
+open -a ComfyQL /path/to/image.png
 ```
 
 ## How it works
 
-ComfyUI embeds workflow JSON in PNG `tEXt`/`iTXt` chunks (keys: `workflow`, `prompt`). ComfyQL reads these chunks at open time and renders a split panel via WKWebView — image (left) + node summary and raw JSON tabs (right). If no ComfyUI chunks are found, the file opens in Preview.app.
-
-## Uninstall
-
-```bash
-make uninstall
-```
+ComfyQL reads format-specific metadata chunks at open time and renders a split panel via WKWebView — image (left) + node summary and raw JSON tabs (right). If no ComfyUI metadata is found, the file opens in Preview.app.
 
 ## Build targets
 
 | Target | Description |
-|--------|-------------|
+|---|---|
 | `make` | Build app |
 | `make install` | Build + copy to `~/Applications/` |
 | `make test` | Open most recent ComfyUI output PNG |
